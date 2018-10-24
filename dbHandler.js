@@ -14,7 +14,7 @@ var sqlConfig = {
 
 module.exports.save = async (sensorMessurement) => {
     try {
-        var pool = await sql.connect(sqlConfig);
+        var pool = await new sql.ConnectionPool(sqlConfig).connect();
         const request = await pool.request()
 
         request.input('sensorType', sql.NVarChar, sensorMessurement.body.sensorType)
@@ -32,7 +32,7 @@ module.exports.save = async (sensorMessurement) => {
 
 module.exports.getAll = async () => {
     try {
-        var pool = await sql.connect(sqlConfig);
+        var pool = await new sql.ConnectionPool(sqlConfig).connect();
         const request = await pool.request()
         var list = [];
 
