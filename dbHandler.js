@@ -1,4 +1,5 @@
 const sql = require("mssql");
+var tableName = 'harborbath';
 
 var sqlConfig = {
     server: "raniot.database.windows.net",
@@ -11,12 +12,17 @@ var sqlConfig = {
       }
    };
 
-module.exports.save = async (message) => {
+module.exports.save = async (sensorMessurement) => {
     try {
         var pool = await sql.connect(sqlConfig);
         const request = await pool.request()
-        request.input('inmessage', sql.VarChar, JSON.stringify(message.body))
-        await request.query("INSERT INTO test(id, message) VALUES(1, @inmessage)")
+
+        request.input('sensorType', sql.NVarChar, sensorMessurement.body.sensorType)
+        request.input('messurementUnit', sql.NVarChar, sensorMessurement.body.messurementUnit)
+        request.input('messurement', sql.NVarChar, sensorMessurement.body.messurement)
+
+
+        await request.query(`INSERT INTO ${tableName}(timeRecorded, sensorType, messurementUnit, messurement) VALUES(CURRENT_TIMESTAMP, @sensorType, @messurementUnit, @messurement)`)
     } catch (error) {
         console.log(error);
     }finally{
@@ -28,7 +34,15 @@ module.exports.getAll = async () => {
     try {
         var pool = await sql.connect(sqlConfig);
         const request = await pool.request()
-        return await request.query("SELECT message FROM test")
+        var list = [];
+
+        var data = await request.query(`SELECT timerecorded, sensorType, messurementUnit, messurement FROM ${tableName}`);
+        data.recordset.forEach(element => {
+            list.push({TimeRecorded: String(element.timerecorded), SensorType: element.sensorType, MessurementUnit: element.messurementUnit, Messurement: element.messurement});
+        });
+        
+        return list;
+
     } catch (error) {
         console.log(error);
     }finally{

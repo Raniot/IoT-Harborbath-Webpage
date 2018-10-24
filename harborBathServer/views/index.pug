@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  table(border='1' align='center')
+    thead
+      tr
+        th Time Recorded
+        th Sensor Type
+        th Messurement Unit
+        th Messurement
+    tbody
+      each data in dataset
+        tr
+          td= data.TimeRecorded
+          td= data.SensorType
+          td= data.MessurementUnit
+          td= data.Messurement
