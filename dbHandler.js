@@ -17,12 +17,13 @@ module.exports.save = async (sensorMessurement) => {
         var pool = await new sql.ConnectionPool(sqlConfig).connect();
         const request = await pool.request()
 
-        request.input('sensorType', sql.NVarChar, sensorMessurement.body.sensorType)
-        request.input('messurementUnit', sql.NVarChar, sensorMessurement.body.messurementUnit)
-        request.input('messurement', sql.NVarChar, sensorMessurement.body.messurement)
-
-
-        await request.query(`INSERT INTO ${tableName}(timeRecorded, sensorType, messurementUnit, messurement) VALUES(CURRENT_TIMESTAMP, @sensorType, @messurementUnit, @messurement)`)
+        sensorMessurement.body.Sensors.forEach((sensor, i) => {
+            request.input('sensorType' + i, sql.NVarChar, sensor.sensorType)
+            request.input('messurementUnit' + i, sql.NVarChar, sensor.messurementUnit)
+            request.input('messurement' + i, sql.NVarChar, sensor.messurement)
+        
+            request.query(`INSERT INTO ${tableName}(timeRecorded, sensorType, messurementUnit, messurement) VALUES(CURRENT_TIMESTAMP, @sensorType${i}, @messurementUnit${i}, @messurement${i})`)
+            });
     } catch (error) {
         console.log(error);
     }finally{
