@@ -37,7 +37,7 @@ module.exports.getAll = async () => {
         const request = await pool.request()
         var list = [];
 
-        var data = await request.query(`SELECT timerecorded, sensorType, messurementUnit, messurement FROM ${tableName}`);
+        var data = await request.query(`SELECT timerecorded, sensorType, messurementUnit, messurement FROM ${tableName} ORDER BY timerecorded`);
         data.recordset.forEach(element => {
             list.push({TimeRecorded: String(element.timerecorded), SensorType: element.sensorType, MessurementUnit: element.messurementUnit, Messurement: element.messurement});
         });
