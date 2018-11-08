@@ -14,7 +14,7 @@ var sqlConfig = {
 
 module.exports.save = async (sensorMessurement) => {
     try {
-        console.log(sensorMessurement);
+        console.log(sensorMessurement.body);
         var pool = await new sql.ConnectionPool(sqlConfig).connect();
         const request = await pool.request()
 
