@@ -18,9 +18,9 @@ module.exports.save = async (sensorMessurement) => {
         const request = await pool.request()
 
         sensorMessurement.body.Sensors.forEach((sensor, i) => {
-            request.input('sensorType' + i, sql.NVarChar, sensor.sensorType)
-            request.input('messurementUnit' + i, sql.NVarChar, sensor.messurementUnit)
-            request.input('messurement' + i, sql.NVarChar, sensor.messurement)
+            request.input('sensorType' + i, sql.NVarChar, sensor.Type)
+            request.input('messurementUnit' + i, sql.NVarChar, sensor.Unit)
+            request.input('messurement' + i, sql.NVarChar, sensor.Value)
         
             request.query(`INSERT INTO ${tableName}(timeRecorded, sensorType, messurementUnit, messurement) VALUES(CURRENT_TIMESTAMP, @sensorType${i}, @messurementUnit${i}, @messurement${i})`)
             });
