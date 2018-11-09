@@ -29,3 +29,7 @@ td {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.line-chart {
+  border: 1px solid lightgray;
+}

@@ -3,17 +3,24 @@ extends layout
 block content
   h1(align='center')= title
 
+  svg(viewBox='0 0 750 400')
+
   table(border='1' align='center')
     thead
       tr
         th Time Recorded
-        th Sensor Type
-        th Messurement Unit
-        th Messurement
+        th Type
+        th Unit
+        th Value
     tbody
       each data in dataset
         tr
           td= data.TimeRecorded
-          td= data.SensorType
-          td= data.MessurementUnit
-          td= data.Messurement
+          td= data.Type
+          td= data.Unit
+          td= data.Value
+
+
+  script(src="https://d3js.org/d3.v5.js")
+  script mydata = "#{test1}";
+    include ../test.js

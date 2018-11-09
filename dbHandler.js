@@ -40,7 +40,34 @@ module.exports.getAll = async () => {
 
         var data = await request.query(`SELECT timerecorded, sensorType, messurementUnit, messurement FROM ${tableName} ORDER BY timerecorded`);
         data.recordset.forEach(element => {
-            list.push({TimeRecorded: String(element.timerecorded), SensorType: element.sensorType, MessurementUnit: element.messurementUnit, Messurement: element.messurement});
+            list.push({TimeRecorded: String(element.timerecorded), Type: element.sensorType, Unit: element.messurementUnit, Value: element.messurement});
+        });
+        
+        return list;
+
+    } catch (error) {
+        console.log(error);
+    }finally{
+        sql.close();
+    }
+}
+
+module.exports.getAllSensorType = async (sensorType) => {
+    try {
+        var pool = await new sql.ConnectionPool(sqlConfig).connect();
+        const request = await pool.request()
+        var list = [];
+
+        request.input('sensorType', sensorType);
+
+        var data = await request.query(`SELECT timerecorded, messurementUnit, messurement FROM ${tableName} WHERE sensorType = @sensorType ORDER BY timerecorded`);
+        data.recordset.forEach(element => {
+            list.push(
+                {
+
+                    Time: String(element.timerecorded),  
+                    Value: element.messurement
+                });
         });
         
         return list;

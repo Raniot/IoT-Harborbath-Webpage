@@ -10,7 +10,7 @@ EventHubClient.createFromIotHubConnectionString(connectionString).then(function 
   ehClient = client;
   return ehClient.getPartitionIds();
 }).then(function (ids) {
-  console.log("The partition ids are: ", ids);
+  console.log('Application ready');
   return ids.map(function (id) {
     return ehClient.receive(id, db.save, console.log, { eventPosition: EventPosition.fromEnqueuedTime(Date.now()) });
   });
