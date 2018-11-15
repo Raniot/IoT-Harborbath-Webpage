@@ -4,17 +4,31 @@ const height = 450 - margin.top - margin.bottom;
 
 const xLabel = 'Time';
 const yLabel = 'Humans';
-var data = replaceAll(inputData, '&quot;', '"')
-var json = JSON.parse(data);
 var dateFrom = new Date(Date.now())
 var dateTo = new Date(Date.now())
 
+var data = replaceAll(humanData, '&quot;', '"')
+var json = JSON.parse(data);
+var tempdata = replaceAll(tempData, '&quot;', '"')
+var tjson = JSON.parse(tempdata);
+var humdata = replaceAll(humData, '&quot;', '"')
+var hjson = JSON.parse(humdata);
+
 const svg = d3.select('#graph1');
 const svg2 = d3.select('#graph2');
+const svg3 = d3.select('#graph3');
 
 var dataset = [];
 json.data.forEach((el, i) => {
     dataset.push({"x": new Date(el.Time), "y": el.Value}); // Skal laves om!!!
+});
+var tempdataset = [];
+tjson.data.forEach((el, i) => {
+    tempdataset.push({"x": new Date(el.Time), "y": el.Value}); // Skal laves om!!!
+});
+var humdataset = [];
+hjson.data.forEach((el, i) => {
+    humdataset.push({"x": new Date(el.Time), "y": el.Value}); // Skal laves om!!!
 });
 
 
@@ -25,20 +39,22 @@ var line = d3.line()
 
 //Define the x-axis:
 var x = d3.scaleTime()
-    .domain([dateFrom.setHours(dateFrom.getHours() - 6), dateTo.setHours(dateTo.getHours() + 2)])
+    //.domain([dateFrom.setHours(dateFrom.getHours() - 6), dateTo.setHours(dateTo.getHours() + 2)])
+    .domain([dateFrom.setMinutes(dateFrom.getMinutes() - 20), dateTo.setMinutes(dateTo.getMinutes() + 5)])
     .range([20, width - 50])
     .nice()
 
 //define the y-axis:
 var y = d3.scaleLinear()
-    .domain([0, 650])
+    .domain([0, 50])
     .range([height - 40, 50])
     .nice()
 
-constructGraph(svg, dataset);
-constructGraph(svg2, dataset);
+constructGraph(svg, dataset, 'Time', 'Humans');
+constructGraph(svg2, tempdataset, 'Time', 'Temperature');
+constructGraph(svg3, humdataset, 'Time', 'Humidity');
 
-function constructGraph(object, data){
+function constructGraph(object, data, xlabel, ylabel){
     object.append('g')
         .attr('class', 'y axis')
         .attr('transform', 'translate(' + 26 + ',0)')
@@ -54,14 +70,14 @@ function constructGraph(object, data){
         .attr("text-anchor", "end")
         .attr("x", width / 2)
         .attr("y", height)
-        .text(xLabel);
+        .text(xlabel);
 
     object.append("text")
         .attr("class", "y label")
         .attr("text-anchor", "end")
         .attr("x", 80)
         .attr("y", 45)
-        .text(yLabel);
+        .text(ylabel);
 
 
     object.append("path")

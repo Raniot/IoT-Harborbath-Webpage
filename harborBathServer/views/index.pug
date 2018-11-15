@@ -3,9 +3,10 @@ extends layout
 block content
   h1(align='center')= title
 
-
-  svg(id='graph1' viewBox='0 0 1200 400')
-  svg(id='graph2' viewBox='0 0 1200 400')
+  div(style="width:1405px")
+    svg(id='graph1' width="450" height="400")
+    svg(id='graph2' width="450" height="400")
+    svg(id='graph3' width="450" height="400")
 
   table(border='1' align='center')
     thead
@@ -24,5 +25,5 @@ block content
 
 
   script(src="https://d3js.org/d3.v5.js")
-  script inputData = "#{data}";
+  script humanData = "#{data}"; tempData = "#{tdata}"; humData = "#{humdata}";
     include ../test.js

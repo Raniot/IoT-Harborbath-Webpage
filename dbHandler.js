@@ -60,7 +60,7 @@ module.exports.getAllSensorType = async (sensorType) => {
 
         request.input('sensorType', sensorType);
 
-        var data = await request.query(`SELECT timerecorded, messurementUnit, messurement FROM ${tableName} WHERE sensorType = @sensorType ORDER BY timerecorded`);
+        var data = await request.query(`SELECT timerecorded, messurementUnit, messurement FROM ${tableName} WHERE sensorType = @sensorType AND timerecorded > DATEADD(HOUR, -6, GETDATE())  ORDER BY timerecorded`);
         data.recordset.forEach(element => {
             list.push(
                 {
