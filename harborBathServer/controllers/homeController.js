@@ -19,6 +19,6 @@ module.exports.index = async (req, res) => {
     humData.forEach(element => {
         humidity.push({"Time": element.Time, "Value": element.Value});
     });
-    console.log(humidity);
+    
     res.render('index', { title: 'Data', dataset: dataForTable, data: JSON.stringify({"data": humans}), tdata: JSON.stringify({"data": temperature}), humdata: JSON.stringify({"data": humidity})  });
 }
