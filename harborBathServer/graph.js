@@ -22,7 +22,7 @@ toArray(humdataset, JSON.parse(humdata));
 toArray(tempdataset, JSON.parse(tempdata));
 
 const xLabel = 'Time';
-var xAxisDomain = [dateFrom.setMinutes(dateFrom.getMinutes() - 40), dateTo.setMinutes(dateTo.getMinutes() + 5)];
+var xAxisDomain = [dateFrom.setMinutes(dateFrom.getMinutes() - 120), dateTo.setMinutes(dateTo.getMinutes() + 60)];
 constructGraph(svg, humandataset, xLabel, 'Humans', xAxisDomain, [0, 50]);
 constructGraph(svg2, tempdataset, xLabel, 'Temperature', xAxisDomain, [0, 50]);
 constructGraph(svg3, humdataset, xLabel, 'Humidity', xAxisDomain, [0, 100]);
@@ -77,8 +77,20 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain){
 
 
     object.append("path")
-        .attr("d", line(data))
+        .attr("d", line(data.filter((d) => {
+            //console.log(d.x + " and " + new Date(Date.now()));
+            return d.x <= new Date(Date.now());
+        })))
         .attr("stroke", "blue")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+
+    object.append("path")
+        .attr("d", line(data.filter((d) => {
+            console.log(d.x + " and " + new Date(Date.now()));
+            return d.x > new Date(Date.now())
+        })))
+        .attr("stroke", "red")
         .attr("stroke-width", 2)
         .attr("fill", "none");
 

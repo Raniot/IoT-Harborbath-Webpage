@@ -1,14 +1,15 @@
 require('../../Listener');
 var db = require('../../dbHandler');
+var predictionTime = 1
 
 module.exports.index = async (req, res) => {
     var dataForTable = await db.getAll();
     var humanData = await db.getAllSensorType('Human counter', 6);
     var tmpData = await db.getAllSensorType('Temperature', 6);
     var humData = await db.getAllSensorType('Humidity', 6);
-    var humanData2h = await db.getAllSensorType('Human counter', 2);
-    var tmpData2h = await db.getAllSensorType('Temperature', 2);
-    var humData2h = await db.getAllSensorType('Humidity', 2);
+    var humanData2h = await db.getAllSensorType('Human counter', predictionTime);
+    var tmpData2h = await db.getAllSensorType('Temperature', predictionTime);
+    var humData2h = await db.getAllSensorType('Humidity', predictionTime);
 
     humans = toSensorList(humanData)
     temperature = toSensorList(tmpData)
@@ -44,14 +45,9 @@ module.exports.index = async (req, res) => {
         newestListObj = humans2h[humans2h.length-1]
         newestListObj.Value = (parseInt(newestListObj.Value) + humanPrediction).toString()
         var dateTo = new Date(Date.now())
-        newestListObj.Time = dateTo.setHours(dateTo.getHours() + 2)
+        newestListObj.Time = dateTo.setHours(dateTo.getHours() + predictionTime)
 
         humans.push(newestListObj)
-
-        // get the time closest to 2 hours ago
-        // take humans differens amount
-        // get temp change from the last 2 hours, if higher increase the number
-        // get humi change from the last 2 hours, if lower increase the number 
     }
 
     function getValueDiffFromFirstToLast(list){
