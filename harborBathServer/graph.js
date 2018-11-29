@@ -23,11 +23,11 @@ toArray(tempdataset, JSON.parse(tempdata));
 
 const xLabel = 'Time';
 var xAxisDomain = [dateFrom.setMinutes(dateFrom.getMinutes() - 120), dateTo.setMinutes(dateTo.getMinutes() + 60)];
-constructGraph(svg, humandataset, xLabel, 'Humans', xAxisDomain, [0, 50]);
+constructGraph(svg, humandataset, xLabel, 'Humans', xAxisDomain, [0, 50], true);
 constructGraph(svg2, tempdataset, xLabel, 'Temperature', xAxisDomain, [0, 50]);
 constructGraph(svg3, humdataset, xLabel, 'Humidity', xAxisDomain, [0, 100]);
 
-function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain){
+function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain, humans = false){
     //Define the x-axis:
     var x = d3.scaleTime()
         .domain(xDomain)
@@ -78,21 +78,20 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain){
 
     object.append("path")
         .attr("d", line(data.filter((d) => {
-            //console.log(d.x + " and " + new Date(Date.now()));
             return d.x <= new Date(Date.now());
         })))
         .attr("stroke", "blue")
         .attr("stroke-width", 2)
         .attr("fill", "none");
-
-    object.append("path")
-        .attr("d", line(data.filter((d) => {
-            console.log(d.x + " and " + new Date(Date.now()));
-            return d.x > new Date(Date.now())
-        })))
-        .attr("stroke", "red")
+    
+    if(humans == true) {
+        object.append("path")
+        .attr("d", line(data.slice(data.length - 2)))
+        .attr("stroke", "blue")
         .attr("stroke-width", 2)
-        .attr("fill", "none");
+        .attr("fill", "none")
+        .style("stroke-dasharray", "4,4");
+    }
 
     object
         .selectAll('dot')
@@ -111,7 +110,7 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain){
             .duration(200)
             .style('opacity', 0.9);
           div
-            .html(ylabel + ": " + parseFloat(d.y).toFixed(2) + "<br\>" + xlabel + ": " + timeFormat(d.x))
+            .html(ylabel + ": " + (humans ? d.y : parseFloat(d.y).toFixed(2)) + "<br\>" + xlabel + ": " + timeFormat(d.x))
             .style('left', d3.event.pageX + 'px')
             .style('top', d3.event.pageY - 28 + 'px');
         })
