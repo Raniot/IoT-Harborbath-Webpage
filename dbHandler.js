@@ -52,7 +52,7 @@ module.exports.getAll = async () => {
     }
 }
 
-module.exports.getAllSensorType = async (sensorType) => {
+module.exports.getAllSensorType = async (sensorType, timePeriod) => {
     try {
         var pool = await new sql.ConnectionPool(sqlConfig).connect();
         const request = await pool.request()
@@ -60,7 +60,7 @@ module.exports.getAllSensorType = async (sensorType) => {
 
         request.input('sensorType', sensorType);
 
-        var data = await request.query(`SELECT timerecorded, messurementUnit, messurement FROM ${tableName} WHERE sensorType = @sensorType AND timerecorded > DATEADD(HOUR, -6, GETDATE())  ORDER BY timerecorded`);
+        var data = await request.query(`SELECT timerecorded, messurementUnit, messurement FROM ${tableName} WHERE sensorType = @sensorType AND timerecorded > DATEADD(HOUR, -${timePeriod}, GETDATE())  ORDER BY timerecorded`);
         data.recordset.forEach(element => {
             list.push(
                 {

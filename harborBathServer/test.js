@@ -40,7 +40,7 @@ var line = d3.line()
 //Define the x-axis:
 var x = d3.scaleTime()
     //.domain([dateFrom.setHours(dateFrom.getHours() - 6), dateTo.setHours(dateTo.getHours() + 2)])
-    .domain([dateFrom.setMinutes(dateFrom.getMinutes() - 20), dateTo.setMinutes(dateTo.getMinutes() + 5)])
+    .domain([dateFrom.setMinutes(dateFrom.getMinutes() - 180), dateTo.setMinutes(dateTo.getMinutes() + 120)])
     .range([20, width - 50])
     .nice()
 
