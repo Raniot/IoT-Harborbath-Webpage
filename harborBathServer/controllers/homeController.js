@@ -70,6 +70,5 @@ module.exports.index = async (req, res) => {
         return list;
       }
 
-    console.log(humidity);
     res.render('index', { title: 'Data', dataset: dataForTable, data: JSON.stringify({"data": humans}), tdata: JSON.stringify({"data": temperature}), humdata: JSON.stringify({"data": humidity})});
 }
