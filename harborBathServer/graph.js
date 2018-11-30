@@ -22,12 +22,12 @@ toArray(humdataset, JSON.parse(humdata));
 toArray(tempdataset, JSON.parse(tempdata));
 
 const xLabel = 'Time';
-var xAxisDomain = [dateFrom.setMinutes(dateFrom.getMinutes() - 120), dateTo.setMinutes(dateTo.getMinutes() + 60)];
-constructGraph(svg, humandataset, xLabel, 'Humans', xAxisDomain, [0, 50], true);
-constructGraph(svg2, tempdataset, xLabel, 'Temperature', xAxisDomain, [0, 50]);
-constructGraph(svg3, humdataset, xLabel, 'Humidity', xAxisDomain, [0, 100]);
+var xAxisDomain = [dateFrom.setMinutes(dateFrom.getMinutes() - 60), dateTo.setMinutes(dateTo.getMinutes() + 60)];
+constructGraph(svg, humandataset, xLabel, 'Count', 'Humans', xAxisDomain, [0, d3.max(humandataset.filter((d) => d.x >= dateFrom).map((d) => parseInt(d.y)))], true);
+constructGraph(svg2, tempdataset, xLabel, '°C', 'Temperature', xAxisDomain, [0, 50]);
+constructGraph(svg3, humdataset, xLabel, '%', 'Humidity', xAxisDomain, [0, 100]);
 
-function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain, humans = false){
+function constructGraph(object, data, xlabel, ylabel, title, xDomain, yDomain, humans = false){
     //Define the x-axis:
     var x = d3.scaleTime()
         .domain(xDomain)
@@ -41,8 +41,8 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain, humans =
         .nice()
 
     var line = d3.line()
-        .x(function(d) { return x(d.x); }) // set the x values for the line generator
-        .y(function(d) { return y(d.y); }) // set the y values for the line generator 
+        .x((d) => x(d.x)) // set the x values for the line generator
+        .y((d) => y(d.y)) // set the y values for the line generator 
         .curve(d3.curveMonotoneX) // apply smoothing to the line
 
     var div = d3
@@ -71,14 +71,21 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain, humans =
     object.append("text")
         .attr("class", "y label")
         .attr("text-anchor", "end")
-        .attr("x", 80)
+        .attr("x", 40)
         .attr("y", 45)
         .text(ylabel);
+
+    object.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", margin.top)
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .text(title);
 
 
     object.append("path")
         .attr("d", line(data.filter((d) => {
-            return d.x <= new Date(Date.now());
+            return (d.x <= new Date(Date.now()) && (d.x >= dateFrom));
         })))
         .attr("stroke", "blue")
         .attr("stroke-width", 2)
@@ -95,7 +102,7 @@ function constructGraph(object, data, xlabel, ylabel, xDomain, yDomain, humans =
 
     object
         .selectAll('dot')
-        .data(data)
+        .data(data.filter((d) => d.x >= dateFrom ))
         .enter()
         .append('circle')
         .attr('r', 5)
